@@ -32,7 +32,6 @@ export default function ProductCard({
 					description: description,
 				},
 			}}
-			// href={`/household-chemicals/${id}`}
 		>
 			<div className={styles.card}>
 				<img src={image} alt={name} className={styles.image} />

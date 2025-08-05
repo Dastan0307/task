@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation'
 import { MultiContainer } from 'src/ui/multiContainer/multiContainer'
 import styles from './style.module.scss'
 import Link from 'next/link'
-import { log } from 'console'
 
 export default function ProductPage({
 	searchParams,
