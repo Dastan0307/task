@@ -61,6 +61,13 @@
 	}
 }
 
+.productsData {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+}
+
 @media screen and (max-width: 428px) {
 	.HouseholdChemicals {
 		max-width: 428px;

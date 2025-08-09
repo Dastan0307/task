@@ -1,20 +1,25 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import PinIcon from "@assets/icons/PinIcon.svg"
 import {
   GoogleMap,
-  Marker,
   InfoWindow,
+  Marker,
   useJsApiLoader,
-} from "@react-google-maps/api";
-import { MultiContainer } from "src/ui/multiContainer/multiContainer";
-import classes from "./map.module.scss";
-import PinIcon from "@assets/icons/PinIcon.svg";
-import { Typography } from "@typography/typography";
-import { getMapData } from "./model/mapModel";
-import useMediaQuery from "@utils/hooks/useMediaQuery";
+} from "@react-google-maps/api"
+import { Typography } from "@typography/typography"
+import useMediaQuery from "@utils/hooks/useMediaQuery"
+import { useEffect, useRef, useState } from "react"
+import { MultiContainer } from "src/ui/multiContainer/multiContainer"
+import classes from "./map.module.scss"
+import { getMapData } from "./model/mapModel"
 
 function getRandomItems<T>(arr: T[], count: number): T[] {
+  // исправил 
+  if (!Array.isArray(arr)) {
+    console.warn("⚠️ getRandomItems: input is not an array", arr);
+    return [];
+  }
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 }

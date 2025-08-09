@@ -18,6 +18,7 @@ export const Carousel = <T,>({
 }: CarouselProps<T>) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const animationFrame = useRef<number | null>(null);
+  const safeItems = Array.isArray(items) ? items : [];
 
   useEffect(() => {
     const track = trackRef.current;
@@ -26,6 +27,7 @@ export const Carousel = <T,>({
     const isLeft = direction === "left";
     const baseSpeed = speed / 60;
     let offset = 0;
+
 
     const animate = () => {
       offset += isLeft ? -baseSpeed : baseSpeed;
@@ -53,7 +55,7 @@ export const Carousel = <T,>({
     <div className={classes.carousel}>
       <div className={classes.trackWrapper}>
         <div ref={trackRef} className={classes.track}>
-          {[...items, ...items].map((item, i) => (
+          {[...safeItems, ...safeItems].map((item, i) => (
             <div key={i} className={classes.card}>
               {renderItem(item, i)}
             </div>
