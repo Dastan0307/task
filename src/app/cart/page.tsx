@@ -1,51 +1,54 @@
 'use client'
+import {
+	decreaseCartItem,
+	getCart,
+	increaseCartItem,
+	removeCartItem,
+} from '@utils/cartApi'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import styles from './cartPage.module.scss'
 import CheckoutModal from './CheckoutModal'
-import Image from 'next/image'
-import { decreaseCartItem, getCart, increaseCartItem, removeCartItem } from '@utils/cartApi'
 
 export default function CartPage() {
 	const pathname = usePathname()
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-	const [cart, setCart] = useState([]);
-	console.log(cart);
-	
+	const [cart, setCart] = useState([])
 
-	const total = cart.reduce((sum, item) => sum + Number(item.product.price) * item.count, 0)
+	const total = cart.reduce((sum, item) => sum + item.total_price * item.count, 0)
 
 	const getStepClassName = (stepPath: string) => {
 		return pathname === stepPath ? styles.active : styles.inactive
 	}
 
-	const openModal = () => {
-		setIsModalOpen(true)
+	const openModal = () => setIsModalOpen(true)
+	const closeModal = () => setIsModalOpen(false)
+
+	useEffect(() => {
+		getCart().then(setCart).catch(console.error)
+	}, [])
+
+	const refreshCart = () => {
+		getCart().then(setCart).catch(console.error)
 	}
 
-	const closeModal = () => {
-		setIsModalOpen(false)
+	const handleIncrease = (id: number) => {
+		increaseCartItem(id).then(refreshCart)
 	}
 
-  useEffect(() => {
-    getCart().then(setCart).catch(console.error);
-  }, []);
+	const handleDecrease = (id: number) => {
+		decreaseCartItem(id).then(refreshCart)
+	}
 
-  const refreshCart = () => {
-    getCart().then(setCart).catch(console.error);
-  };
-
-  const handleIncrease = (id: number) => {
-    increaseCartItem(id).then(refreshCart);
-  };
-
-  const handleDecrease = (id: number) => {
-    decreaseCartItem(id).then(refreshCart);
-  };
-
-  const handleRemove = (id: number) => {
-    removeCartItem(id).then(refreshCart);
-  };
+	const handleRemove = async (id: number) => {
+		try {
+			await removeCartItem(id)
+			setCart(prev => prev.filter(item => item.id !== id)) 
+		} catch (error) {
+			console.error(error)
+		}
+	}
 
 	return (
 		<div className={styles.cartContainer}>
@@ -74,8 +77,8 @@ export default function CartPage() {
 							{cart.map(item => (
 								<div key={item.id} className={styles.cartItem}>
 									<Image
-										src={item.image}
-										alt={item.name}
+										src={item.product.image}
+										alt={item.product.title}
 										width={100}
 										height={100}
 										className={styles.itemImage}
@@ -83,44 +86,39 @@ export default function CartPage() {
 									<div className={styles.itemInfo}>
 										<span
 											className={
-												item.available ? styles.available : styles.notAvailable
+												item.product.is_available
+													? styles.available
+													: styles.notAvailable
 											}
 										>
-											{item.available ? 'В наличии' : 'Нет в наличии'}
+											{item.product.is_available
+												? 'В наличии'
+												: 'Нет в наличии'}
 										</span>
-										<h3 className={styles.itemName}>{item.name}</h3>
-										<p className={styles.itemPrice}>{item.price} $</p>
+										<h3 className={styles.itemName}>{item.product.title}</h3>
+										<p className={styles.itemPrice}>{item.product.price} $</p>
 									</div>
 
 									<div className={styles.quantityContainer}>
 										<div className={styles.quantityLabels}>
 											<div className={styles.quantityLabel}>Штук</div>
-											<div className={styles.quantityLabel}>Упаковок</div>
 										</div>
 										<div className={styles.quantityControl}>
 											<button
-												onClick={() =>
-													handleDecrease(item.id)
-												}
-												disabled={item.quantity <= 1}
+												onClick={() => handleDecrease(item.id)}
+												disabled={item.count <= 1}
 											>
 												-
 											</button>
-											<span>{item.quantity}</span>
-											<button
-												onClick={() =>
-													handleIncrease(item.id)
-												}
-											>
-												+
-											</button>
+											<span>{item.count}</span>
+											<button onClick={() => handleIncrease(item.id)}>+</button>
 										</div>
 									</div>
 
 									<div className={styles.totalWrapper}>
 										<span className={styles.totalText}>Итог</span>
 										<span className={styles.itemTotal}>
-											{item.price * item.quantity} $
+											{Number(item.total_price).toFixed(2)} $
 										</span>
 									</div>
 									<button
@@ -148,11 +146,15 @@ export default function CartPage() {
 							<div className={styles.summaryHeader}>
 								<div className={styles.summaryRowHeader}>
 									<span className={styles.summaryLabel}>Подытог</span>
-									<span className={styles.summaryValue}>{total} $</span>
+									<span className={styles.summaryValue}>
+										{total.toFixed(2)} $
+									</span>
 								</div>
 								<div className={styles.summaryRowHeader}>
 									<span className={styles.summaryLabel}>Итого</span>
-									<span className={styles.summaryValueTotal}>{total} $</span>
+									<span className={styles.summaryValueTotal}>
+										{total.toFixed(2)} $
+									</span>
 								</div>
 							</div>
 							<button className={styles.checkoutButton} onClick={openModal}>
