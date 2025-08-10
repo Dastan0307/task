@@ -1,20 +1,38 @@
-import { notFound } from 'next/navigation'
+"use client"
+
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { MultiContainer } from 'src/ui/multiContainer/multiContainer'
 import styles from './style.module.scss'
-import Link from 'next/link'
+
+type SearchParams = {
+	name: string
+	price: string
+	image: string
+	description: string
+}
 
 export default function ProductPage({
 	searchParams,
 }: {
-	params: { id: string }
-	searchParams: {
-		name: string
-		price: string
-		image: string
-		description: string
-	}
+	searchParams: Promise<SearchParams>
 }) {
-	const { name, price, image, description } = searchParams
+	const [params, setParams] = useState<SearchParams | null>(null)
+
+	useEffect(() => {
+		let mounted = true
+		searchParams.then(p => {
+			if (mounted) setParams(p)
+		})
+		return () => {
+			mounted = false
+		}
+	}, [searchParams])
+
+	if (!params) return <div>Loading...</div>
+
+	const { name, price, image, description } = params
 
 	return (
 		<div className={styles.ProductPage}>
@@ -55,7 +73,7 @@ export default function ProductPage({
 				</div>
 
 				<div className={styles.productDesktop}>
-					<img src={image} alt={name} className={styles.image} />
+					<Image src={image} alt={name} className={styles.image} width={400} height={400} />
 					<div className={styles.productIn}>
 						<h2 className={styles.name}>{name}</h2>
 						<h4 className={styles.desc}>Описание</h4>
@@ -69,7 +87,7 @@ export default function ProductPage({
 				</div>
 
 				<div className={styles.productMobile}>
-					<img src={image} alt={name} className={styles.image} />
+					<Image src={image} alt={name} className={styles.image} width={400} height={400} />
 					<div className={styles.productIn}>
 						<h2 className={styles.name}>{name}</h2>
 						<p className={styles.price}>{price} $</p>

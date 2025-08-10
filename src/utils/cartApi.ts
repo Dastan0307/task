@@ -5,6 +5,7 @@ const defaultHeaders = {
 	'ngrok-skip-browser-warning': 'true',
 }
 
+
 export const getCart = async () => {
 	const res = await fetch(`${BASE_URL}/cart/`, {
 		method: 'GET',

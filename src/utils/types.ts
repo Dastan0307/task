@@ -20,3 +20,19 @@ export interface IWorks {
     images: StaticImageData[];
   };
 }
+
+export interface CartProduct {
+  title: string
+  price: string
+  image: string
+  is_available: boolean
+}
+
+export interface CartItem {
+  title: string
+  id: number
+  product: CartProduct
+  description: string
+  count: number
+  total_price: string
+}

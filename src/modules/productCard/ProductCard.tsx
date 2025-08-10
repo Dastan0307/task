@@ -47,30 +47,28 @@
 // 	)
 // }
 
-
 'use client'
 
 import { addCartItem } from '@utils/cartApi'
+import Image from 'next/image'
 import Link from 'next/link'
 import styles from './style.module.scss'
-import { useCart } from '../cart/CartContext'
 
 interface Props {
-    id: string | number
-    image: string
-    name: string
-    description: string
-    price: number
-    available: boolean
+  id: number;              // Id
+  title: string;           // Title
+  image: string;           // Image (url или путь)
+  price: number;           // Price
+  is_available: boolean;   // Is available
+  description: string;     // Description
 }
-
 export default function ProductCard({
-    id,
-    image,
-    name,
-    description,
-    price,
-    available,
+	id,
+	title,
+	description,
+	price,
+	is_available: available,
+	image,
 }: Props) {
 	const handleAddToCart = async () => {
 		try {
@@ -87,13 +85,13 @@ export default function ProductCard({
 			<Link
 				href={{
 					pathname: `/household-chemicals/${id}`,
-					query: { name, price: price.toString(), image, description },
+					query: { title, price: price, image, description },
 				}}
 			>
-				<img src={image} alt={name} className={styles.image} />
+				<Image src={image} alt={title} className={styles.image} width={300} height={300} />
 			</Link>
 
-			<h3 className={styles.name}>{name}</h3>
+			<h3 className={styles.name}>{title}</h3>
 			<h4 className={styles.description}>{description}</h4>
 
 			<span className={available ? styles.available : styles.notAvailable}>
@@ -102,11 +100,7 @@ export default function ProductCard({
 
 			<p className={styles.price}>{price} $</p>
 
-			<button
-				type="button"
-				className={styles.btn}
-				onClick={handleAddToCart}
-			>
+			<button type='button' className={styles.btn} onClick={handleAddToCart}>
 				В корзину
 			</button>
 		</div>

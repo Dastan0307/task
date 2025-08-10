@@ -148,27 +148,20 @@ import Link from 'next/link'
 import { Typography } from '@typography/typography'
 import { Modal } from 'src/ui/modal/modal'
 import Form from '@modules/sendForm/form'
-import {
-    getHeaderAreas,
-    getHeaderBrands,
-    getHeaderInstallation,
-    getHeaderRepair,
-} from '@modules/aboutBlock/model/aboutBlockModel'
-import { useCart } from '@modules/cart/CartContext'
 
 const HeaderComponent = () => {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [data, setData] = useState({ brands: [], installs: [], repair: [], areas: [] })
-    const [isMounted, setIsMounted] = useState(false); // <-- Новое состояние
+    // const [isMounted, setIsMounted] = useState(false); // <-- Новое состояние
     
-    const { totalItems } = useCart()
+
+
 
     useEffect(() => {
-        setIsMounted(true); // <-- Устанавливаем в true после первой отрисовки на клиенте
+        // setIsMounted(true); 
         const fetchHeaderData = async () => {
             const newData = { brands: [], installs: [], repair: [], areas: [] };
-            // ... ваш код для получения данных ...
             setData(newData);
         };
         fetchHeaderData();
@@ -215,7 +208,7 @@ const HeaderComponent = () => {
                                 fill='white'
                             />
                         </svg>
-                        {isMounted && totalItems > 0 && <span>{totalItems}</span>} {/* <-- Изменяем эту строку */}
+                        {/* {isMounted && totalItems > 0 && <span>{totalItems}</span>} */}
                     </Link>
                     {isMenuOpen && (
                         <Modal onClose={() => setIsMenuOpen(false)} isOpen={isMenuOpen}>

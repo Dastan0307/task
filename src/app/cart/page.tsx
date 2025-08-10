@@ -10,13 +10,15 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import styles from './cartPage.module.scss'
 import CheckoutModal from './CheckoutModal'
+import { CartItem } from '@utils/types'
+
 
 export default function CartPage() {
 	const pathname = usePathname()
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-	const [cart, setCart] = useState([])
+	const [cart, setCart] = useState<CartItem[]>([])
 
-	const total = cart.reduce((sum, item) => sum + item.total_price * item.count, 0)
+	const total = cart.reduce((sum, item) => sum + Number(item.total_price) * item.count, 0)
 
 	const getStepClassName = (stepPath: string) => {
 		return pathname === stepPath ? styles.active : styles.inactive
@@ -74,7 +76,7 @@ export default function CartPage() {
 				) : (
 					<>
 						<div className={styles.cartContent}>
-							{cart.map(item => (
+							{cart.map((item: CartItem) => (
 								<div key={item.id} className={styles.cartItem}>
 									<Image
 										src={item.product.image}

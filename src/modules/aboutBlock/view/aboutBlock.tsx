@@ -61,7 +61,7 @@ const AboutBlock = () => {
             <Typography variant="h3">Brand we work with:</Typography>
             <div className={classes.aboutBlockMarkies}>
               <div>
-                <Image src={AboutBlockIcon} alt="AboutBlockIcon" width={200} />
+                <Image src={AboutBlockIcon} alt="AboutBlockIcon" width={200} height={200} />
               </div>
               <div className={classes.aboutBlockMarkiesList}>
                 {headersBrandData &&

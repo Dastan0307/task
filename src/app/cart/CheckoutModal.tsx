@@ -219,19 +219,11 @@
 
 import React, { ChangeEvent, FormEvent, useState } from 'react'
 import styles from './cartPage.module.scss'
+import { CartItem } from '@utils/types'
 
 interface Product {
 	title: string
 	price: string
-}
-
-interface CartItem {
-	id: number
-	name: string
-	price: number
-	quantity: number
-	image: string
-	available: boolean
 }
 
 interface OrderItem {
@@ -296,12 +288,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 			notes: formData.notes,
 			items: cartItems.map(item => ({
 				id: item.id,
-				count: item.quantity,
+				count: item.count,
 				product: {
 					title: item.title,
 					price: item.total_price,
 				},
-				total_price: (item.total_price * item.count).toFixed(2),
+				total_price: item.total_price,
 			})),
 		}
 
@@ -346,7 +338,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
 	// const total = cartItems.reduce((sum, item) => sum + item.total_price * item.count, 0);
 	const total = (cartItems || []).reduce((sum, item) => {
-		const price = (item?.total_price ?? 0) * (item?.count ?? 0)
+		const price = Number(item?.total_price ?? 0) * (item?.count ?? 0)
 		return sum + price
 	}, 0)
 

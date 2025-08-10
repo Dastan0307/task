@@ -7,8 +7,17 @@ import { useEffect, useState } from 'react'
 import { MultiContainer } from 'src/ui/multiContainer/multiContainer'
 import styles from './style.module.scss'
 
+interface Product {
+	id: number // Id
+	title: string // Title
+	image: string // Image (url или путь)
+	price: number // Price
+	is_available: boolean // Is available
+	description: string // Description
+}
+
 export default function HouseholdChemicals() {
-	const [productsData, setProductsData] = useState([])
+	const [productsData, setProductsData] = useState<Product[]>([])
 
 	useEffect(() => {
 		const getProductsFromServer = async () => {
